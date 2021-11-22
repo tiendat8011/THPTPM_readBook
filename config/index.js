@@ -22,6 +22,14 @@ switch (process.env.NODE_ENV) {
     password = process.env.PASSWORD_STAGING;
     host = `url`;
     break;
+  case "production":
+    mongo_uri = process.env.MONGO_LOCAL_URL;
+    secret_key = 'test';
+    port = '3000';
+    email = 'trancuong.0209000';
+    password = '123456';
+    host = 'reading-app-thptpm.herokuapp.com';
+    break;
   default:
     break;
 }
