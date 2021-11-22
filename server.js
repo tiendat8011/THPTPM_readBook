@@ -26,7 +26,7 @@ app.use(express.json());
 app.use('/uploads', express.static('./uploads'));
 app.use('/api', myRouter);
 app.use('/', express.static('./public')); 
-// app.use('/docs', require('./routes/docs')); 
+app.use('/docs', require('./routes/docs')); 
 
 const port = process.env.PORT || keys.port; //heroku cap port or lay local
 app.listen(port, () => {

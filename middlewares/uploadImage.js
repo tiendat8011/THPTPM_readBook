@@ -14,7 +14,7 @@ module.exports.uploadImage = (type) => {
   const upload = multer({
     storage: multerS3({
       s3: new aws.S3(),
-      bucket: 'upload-letgo',
+      bucket: 'upload',
       acl: 'public-read',
       key: function (req, file, cb) {
         if (file.mimetype === 'application/octet-stream') type = '.jpg';
