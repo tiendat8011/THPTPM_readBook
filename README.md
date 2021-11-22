@@ -7,3 +7,6 @@ This is a backend of project Website Readbook online
 
 1. Run: `yarn install`
 2. Run in terminal to start server: `yarn dev`
+
+## View api info
+{url}/docs
