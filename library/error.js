@@ -1,6 +1,6 @@
 const {badRequest, serverError, notFound} = require('../utils/response-utils')
 
-const CommonError = (req, err, res) => {
+exports.CommonError = (req, err, res) => {
   console.log(`${req.method} ${req.originalUrl}`, err.message);
   
   if (/must not be/.test(err.message) || /must be/.test(err.message)) return res.json(badRequest(err.message));
@@ -9,4 +9,4 @@ const CommonError = (req, err, res) => {
   return res.json(serverError(err.message));
 };
 
-export default CommonError;
+// export default CommonError;
