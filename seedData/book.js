@@ -1364,7 +1364,7 @@ const generateBook = async() => {
                 description: description(book.title, book.author),
                 content: content[index % content.length],
                 pageNumber: pageNumber[index % pageNumber.length],
-                releaseYear: randomDate(new Date(2012, 0, 1), new Date()).toString(),
+                releaseYear: randomDate(new Date(2012, 0, 1), new Date()).toISOString(),
                 country: isVietnamese(book.author) ? "Việt Nam" : "Mỹ",
                 author: book.author,
                 publishing: true,

@@ -41,8 +41,7 @@ const bookSchema = new mongoose.Schema(
 			default: 0
 		},
         releaseYear: {
-            type: Date,
-            default: new Date(),
+            type: String,
         },
         country: {
             type: String,
@@ -50,13 +49,14 @@ const bookSchema = new mongoose.Schema(
         },
         publishing: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         author: {
             type: String,
             require: true,
             trim: true
         }
+
     },
     {timestamps: true}
 );

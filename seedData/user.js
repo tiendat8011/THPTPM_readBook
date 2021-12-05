@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Book = require('../models/Book')
 
 const randomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -22,12 +23,28 @@ const generateUser = async() => {
             await newUser.save() 
             const token = await newUser.generateAuthToken();
         })
+
         console.log(`Seed ${count} User Success`);
     } catch (error) {
         throw new Error(error.message);
     }
 
 };
+const updatePostedBook = async() => {
+    try {
+        const books = await Book.find();
+
+        books.forEach(async(book) => {
+            await User.findOneAndUpdate(
+                { _id: book.bookPoster._id }, 
+                { $push: { postedBook: book._id } }, 
+                { useFindAndModify: false }
+            )
+        })
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
 module.exports = {
     generateUser

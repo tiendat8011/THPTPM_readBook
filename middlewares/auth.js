@@ -27,9 +27,14 @@ module.exports.authenticate = async (req, res, next) => {
 
 module.exports.authorize = (userTypeArray) => {
   return async (req, res, next) => {
-    const isAdmin = await req.user.userType.includes(userTypeArray);
+    const arr = userTypeArray.split(' ');
+    let isAvailable = false
+    arr.forEach(async (userType) => {
+      const test = await req.user.userType.includes(userType);
+      if(test) isAvailable = true;
+    })
     try {
-      if (!isAdmin)
+      if (!isAvailable)
         throw new Error(
           'Access denied. You are logged in but do not have permission.'
         );
