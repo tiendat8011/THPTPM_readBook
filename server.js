@@ -4,7 +4,7 @@ const myRouter = require('./routes/index');
 const keys = require('./config/index');
 const cors = require('cors');
 const chalk = require('chalk');
-
+const {seed} = require('./seedData/seed')
 mongoose
   .connect(keys.mongo_uri, {
     useNewUrlParser: true,
@@ -14,6 +14,13 @@ mongoose
   })
   .then(async () => {
     console.log(`Connected to database successfully ${keys.mongo_uri}`)
+    return await seed()
+      .then(() => {
+        console.log("Seed success!");
+      })
+      .catch((e) => {      
+        console.log(e.stack);
+      });
   })
   .catch(console.log);
 const app = express();
