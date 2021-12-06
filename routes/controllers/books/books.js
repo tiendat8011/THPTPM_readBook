@@ -12,11 +12,14 @@ module.exports.getBook = async (req, res, next) => { // get all book đang publi
     try {
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
+        const { category } = req.query
+        if(category && !checkCategory.includes(category)) throw new Error('INVALID_CATEGORY')
     
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         const results = {};
-        const totalBook = await Book.countDocuments().exec()
+        const condition = category ? {category: category}: {}
+        const totalBook = await Book.countDocuments(condition).exec()
         results['totalBook'] = totalBook
         if (endIndex < totalBook) {
             results.next = {
@@ -31,7 +34,54 @@ module.exports.getBook = async (req, res, next) => { // get all book đang publi
                 limit: limit,
             };
         }
-        results.results = await Book.find({publishing: true})
+        results.results = await Book.find(condition)
+            .populate({
+                path: 'bookPoster',
+                select: {
+                    fullName: 1,
+                }
+            })
+            .limit(limit)
+            .skip(startIndex)
+            .exec();
+		return res.json(success(results));
+	} catch (err) {
+		return CommonError(req, err, res);
+	}
+};
+
+module.exports.getBookByAuthor = async (req, res, next) => { // get all book đang publish
+    try {
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const { id } = req.params;
+        const author = await User.findById(id);
+        if(!author) throw new Error('AUTHOR_NOT_FOUND')
+
+        const { category } = req.query
+        if(category && !checkCategory.includes(category)) throw new Error('INVALID_CATEGORY')
+
+        const condition = category ? {category: category, bookPoster: author._id }: {bookPoster: author._id}
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        const results = {};
+        const totalBook = await Book.countDocuments(condition).exec()
+        results['totalBook'] = totalBook
+        if (endIndex < totalBook) {
+            results.next = {
+                page: page + 1,
+                limit: limit,
+            };
+        }
+    
+        if (startIndex > 0) {
+            results.previous = {
+                page: page - 1,
+                limit: limit,
+            };
+        }
+        results.results = await Book.find(condition)
             .populate({
                 path: 'bookPoster',
                 select: {
@@ -109,7 +159,7 @@ module.exports.updateBookById = async (req, res, next) => {
         if(!check(country)) book.country = country;
         if(!check(author)) book.author = author;
         if(!check(releaseYear)) book.releaseYear = new Date(releaseYear.toString()).toISOString();
-        if(pageNumber) book.pageNumber = ParseInt(pageNumber);
+        if(pageNumber) book.pageNumber = parseInt(pageNumber);
         
         const result = await book.save()
         return res.json(success(result));
