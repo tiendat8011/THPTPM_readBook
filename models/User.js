@@ -30,12 +30,21 @@ const userSchema = new mongoose.Schema({
     },
   },
   fullName: { type: String, trim: true },
-  userType: { type: String, default: "client" },
+  userType: { type: String, default: "client" , enum: ['client', 'admin', 'author']},
   phoneNumber: { type: String, trim: true, maxlength: 10 },
   dayOfBirth: { type: String, trim: true },
   avatar: { type: String, trim: true },
   tokens: [{ token: { type: String, required: true } }],
-
+  likeBooks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Book',
+  }],
+  postedBook: [{
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Book',
+  }],
 });
 
 userSchema.methods.toJSON = function () {
